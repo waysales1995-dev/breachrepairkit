@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   description:
     'Get a calm, private action plan for suspicious links, account alerts, fake delivery texts, bank scams, and more. No account required.',
   applicationName: 'Breach Response Kit',
+  other: {
+    'impact-site-verification': 'ff59a7d5-b917-4481-b6cb-22b33dd9dea4',
+  },
   openGraph: {
     type: 'website',
     siteName: 'Breach Response Kit',
