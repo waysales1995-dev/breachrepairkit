@@ -24,7 +24,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur-xl">
       <div className="container flex h-[74px] items-center justify-between gap-4">
-        <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Breach Repair Kit home" onClick={() => setOpen(false)}>
+        <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Breach Response Kit home" onClick={() => setOpen(false)}>
           <BrandMark />
           <span className="text-[15px] font-extrabold tracking-[-.045em] text-slate-900 sm:text-base">Breach<span className="text-blue-600">Repair</span>Kit</span>
         </Link>
