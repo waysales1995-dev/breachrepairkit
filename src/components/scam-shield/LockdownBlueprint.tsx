@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Check, Circle, ExternalLink, PhoneOff, Printer, ShieldCheck } from 'lucide-react';
+import { Check, Circle, ExternalLink, PhoneOff, Printer, ShieldCheck, Smartphone } from 'lucide-react';
 import { affiliateConfig } from '@/data/affiliateConfig';
 
 const items = [
@@ -18,6 +18,7 @@ export default function LockdownBlueprint() {
   const [ready, setReady] = useState(false);
   const [safeWord, setSafeWord] = useState('');
   const callBlocker = affiliateConfig['senior-call-blocker'];
+  const seniorPhone = affiliateConfig['senior-phone'];
 
   /* eslint-disable react-hooks/set-state-in-effect -- restore the family checklist from this browser on mount */
   useEffect(() => {
@@ -47,23 +48,64 @@ export default function LockdownBlueprint() {
         })}
       </div>
 
-      <div className="no-print mt-5 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 sm:p-5">
-        <div className="flex items-start gap-3.5">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
-            <PhoneOff size={19} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] font-extrabold uppercase tracking-[.1em] text-blue-700">Optional hardware safeguard</span>
-              <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600 border border-slate-200">For home landlines</span>
+      <div className="no-print mt-6">
+        <p className="text-[11px] font-extrabold uppercase tracking-[.12em] text-slate-400">
+          Optional physical safeguards for parents &amp; seniors
+        </p>
+        <div className="mt-2.5 grid gap-3.5 md:grid-cols-2">
+          <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 sm:p-5">
+            <div className="flex items-start gap-3.5">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+                <PhoneOff size={19} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="inline-block rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600">
+                  Home landlines
+                </span>
+                <p className="mt-1.5 text-sm font-bold text-slate-900">One-Touch Scam Call Blocker</p>
+                <p className="mt-1 text-xs leading-5 text-slate-600">
+                  Connects to a home landline to screen out known robocallers before the phone rings and adds a physical red “Block Now” button beside the handset.
+                </p>
+                <a
+                  href={callBlocker.url}
+                  target="_blank"
+                  rel="sponsored noopener noreferrer"
+                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 hover:underline"
+                >
+                  View call blockers on Amazon <ExternalLink size={12} />
+                </a>
+              </div>
             </div>
-            <p className="mt-1 text-sm font-bold text-slate-900">Physical One-Touch Scam Call Blocker</p>
-            <p className="mt-1 text-xs leading-5 text-slate-600">If an older parent still uses a home landline, a physical call-blocker box screens out known robocallers before the phone rings and adds a physical red “Block Now” button next to the handset.</p>
-            <a href={callBlocker.url} target="_blank" rel="sponsored noopener noreferrer" className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 hover:underline">
-              Check call-blocker options on Amazon <ExternalLink size={12} />
-            </a>
+          </div>
+
+          <div className="rounded-2xl border border-slate-200 bg-slate-50/80 p-4 sm:p-5">
+            <div className="flex items-start gap-3.5">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700">
+                <Smartphone size={19} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <span className="inline-block rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600">
+                  Simplified mobile
+                </span>
+                <p className="mt-1.5 text-sm font-bold text-slate-900">Senior-Friendly Smartphone with Urgent Response</p>
+                <p className="mt-1 text-xs leading-5 text-slate-600">
+                  Large-text interface designed for older adults with simplified menus, scam-call filtering, and a dedicated urgent-response button for family peace of mind.
+                </p>
+                <a
+                  href={seniorPhone.url}
+                  target="_blank"
+                  rel="sponsored noopener noreferrer"
+                  className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 hover:underline"
+                >
+                  Compare senior phones on Amazon <ExternalLink size={12} />
+                </a>
+              </div>
+            </div>
           </div>
         </div>
+        <p className="mt-2 text-[10px] text-slate-400">
+          As an Amazon Associate I earn from qualifying purchases. See our <a href="/disclosure" className="underline">affiliate disclosure</a>.
+        </p>
       </div>
 
       <div className="mt-6 grid gap-5 rounded-2xl border border-indigo-100 bg-indigo-50/70 p-4 sm:grid-cols-[1fr_.9fr] sm:p-5">

@@ -1,8 +1,13 @@
 import type { ToolCategory } from './triageScenarios';
 
-/** Replace each URL with your approved affiliate tracking link as soon as each partner approves you. */
+export const AMAZON_TAG = 'breachresponsekit-20';
+
+export function amazonSearchUrl(query: string) {
+  return `https://www.amazon.com/s?k=${encodeURIComponent(query)}&tag=${AMAZON_TAG}`;
+}
+
 export const affiliateConfig: Record<
-  ToolCategory | 'senior-call-blocker',
+  ToolCategory | 'senior-call-blocker' | 'senior-phone' | 'usb-data-blocker',
   { label: string; url: string; categoryName: string }
 > = {
   'password-manager': {
@@ -26,13 +31,23 @@ export const affiliateConfig: Record<
     categoryName: 'Data-removal services',
   },
   'hardware-key': {
-    label: 'YubiKey 5 NFC Hardware Key',
-    url: 'https://www.yubico.com/',
+    label: 'YubiKey 5 NFC / 5C NFC Security Key',
+    url: amazonSearchUrl('YubiKey 5 NFC security key'),
     categoryName: 'Hardware security keys',
   },
   'senior-call-blocker': {
-    label: 'CPR Call Blocker V5000 (Amazon)',
-    url: 'https://www.amazon.com/s?k=CPR+Call+Blocker+V5000',
+    label: 'CPR Call Blocker V5000',
+    url: amazonSearchUrl('CPR Call Blocker V5000 landline'),
     categoryName: 'Senior call-blocking hardware',
+  },
+  'senior-phone': {
+    label: 'Simplified Senior Cell Phone with SOS & Scam Block',
+    url: amazonSearchUrl('Lively Jitterbug Smart4 senior cell phone'),
+    categoryName: 'Senior-friendly phones',
+  },
+  'usb-data-blocker': {
+    label: 'PortaPow USB-C / USB-A Data Blocker',
+    url: amazonSearchUrl('PortaPow USB C data blocker'),
+    categoryName: 'USB charging data blockers',
   },
 };

@@ -114,11 +114,20 @@ const dataRemovalTool: RecommendedTool = {
 };
 
 const hardwareKeyTool: RecommendedTool = {
-  toolName: 'Hardware security key (YubiKey)',
-  badgeText: 'Phishing-resistant 2FA upgrade',
-  description: 'Unlike SMS codes that scammers can trick you into reading aloud, a physical USB/NFC security key blocks sign-ins on fake look-alike websites.',
-  ctaText: 'View YubiKey options',
-  affiliatePlaceholderUrl: 'https://www.yubico.com/',
+  toolName: 'YubiKey 5 NFC Hardware Security Key',
+  badgeText: 'Phishing-proof 2FA upgrade · Amazon',
+  description: 'SMS codes can be phished or read aloud to callers. A physical YubiKey taps to your phone or computer and blocks sign-ins on fake look-alike websites.',
+  ctaText: 'See YubiKey 5 NFC on Amazon',
+  affiliatePlaceholderUrl: 'https://www.amazon.com/s?k=YubiKey+5+NFC+security+key&tag=breachresponsekit-20',
+  category: 'hardware-key',
+};
+
+const usbBlockerTool: RecommendedTool = {
+  toolName: 'USB Data-Only Charging Blocker',
+  badgeText: 'Public charging protection · Amazon',
+  description: 'Blocks data pins on airport, hotel, and rental-car USB ports so public chargers can only deliver power—never access your phone data.',
+  ctaText: 'See USB data blockers on Amazon',
+  affiliatePlaceholderUrl: 'https://www.amazon.com/s?k=PortaPow+USB+C+data+blocker&tag=breachresponsekit-20',
   category: 'hardware-key',
 };
 
@@ -247,7 +256,7 @@ export const triageScenarios: TriageScenario[] = [
       { id: 'recover-account', stepTitle: 'Use the official recovery flow if you cannot sign in', whyItMatters: 'If someone changed your password or recovery details, the service’s own recovery process is the safest route back in.', exactInstructions: 'Type the service’s known address or open its official app and choose account recovery. Do not pay a caller or share a recovery code with anyone who contacts you.', severityWeight: 22, showIf: { questionId: 'password', anyOf: ['no', 'unsure'] } },
       { id: 'change-account-password', stepTitle: 'Change the account password and turn on two-step sign-in', whyItMatters: 'A new unique password and a second sign-in check help protect an account after an unfamiliar sign-in.', exactInstructions: 'Open the service directly, change the password to a unique one, review active sessions, and enable two-step sign-in or a passkey in Security settings. Never share a sign-in code.', severityWeight: 21, showIf: { questionId: 'password', anyOf: ['yes'] }, recommendedTool: passwordTool },
       { id: 'check-reused-passwords', stepTitle: 'Change reused passwords on other important accounts', whyItMatters: 'Someone may try a password from one service on email, banking, or shopping accounts.', exactInstructions: 'From each service’s official app or site, set a different password. Start with email and financial accounts, and never reuse the exposed password.', severityWeight: 15, showIf: { questionId: 'reuse', anyOf: ['yes', 'unsure'] }, recommendedTool: passwordTool },
-      { id: 'enable-two-step', stepTitle: 'Enable two-step sign-in for this account', whyItMatters: 'A second sign-in check adds protection if a password is guessed or exposed.', exactInstructions: 'In the official account’s Security settings, turn on two-step verification or add a passkey. Keep recovery codes private and never read a one-time code to a caller.', severityWeight: 12 },
+      { id: 'enable-two-step', stepTitle: 'Enable two-step sign-in or a hardware key for this account', whyItMatters: 'A physical security key or authenticator app stops attackers even if they guess your password.', exactInstructions: 'In the official account’s Security settings, turn on two-step verification or register a physical YubiKey. Keep recovery codes private and never read a one-time code to a caller.', severityWeight: 12, recommendedTool: hardwareKeyTool },
       { id: 'recovery-settings', stepTitle: 'Review recovery email, phone, and forwarding settings', whyItMatters: 'An intruder may change account recovery options or add a rule that hides future security notices.', exactInstructions: 'In the account’s Security and Mail settings, verify recovery email and phone are yours. Check forwarding, filters, and connected apps for changes you did not make.', severityWeight: 15, showIf: { questionId: 'confirmed', anyOf: ['yes', 'unsure'] } },
     ],
     seoGuide: {
@@ -342,7 +351,7 @@ export const triageScenarios: TriageScenario[] = [
       { id: 'review-apps', stepTitle: 'Review recent apps and high-use battery activity', whyItMatters: 'A newly installed or misbehaving app can explain battery drain without a breach.', exactInstructions: 'Look at battery usage and recently installed apps. Remove apps you do not recognize or no longer need; if it is a work device, ask your IT team first.', platformInstructions: { iphone: 'Settings → Battery to review usage. For a profile, Settings → General → VPN & Device Management.', android: 'Settings → Battery → Battery usage, then Settings → Apps → See all apps. Run Play Protect from the Play Store.', windows: 'Settings → System → Power & battery → Battery usage; review unfamiliar apps in Settings → Apps.', mac: 'System Settings → Battery and Activity Monitor; review Login Items under General.' }, severityWeight: 18, showIf: { questionId: 'installed', anyOf: ['yes', 'unsure'] }, recommendedTool: securityTool },
       { id: 'browser-notifications', stepTitle: 'Turn off suspicious website notifications', whyItMatters: 'Some fake “virus” alerts are browser notifications from websites, not device infections.', exactInstructions: 'Open your browser settings and remove notification permission for sites you do not recognize. Close any page urging you to call a support number.', platformInstructions: { iphone: 'Settings → Apps → Safari → turn on Block Pop-ups. In Safari, close suspicious tabs; do not call numbers in webpage warnings.', android: 'Chrome → ⋮ → Settings → Site settings → Notifications; remove unknown sites. Chrome → Settings → Site settings → Pop-ups and redirects → Blocked.', windows: 'In Edge: Settings → Cookies and site permissions → Notifications; remove unknown sites. Close the fake alert tab.', mac: 'Safari → Settings → Websites → Notifications; deny unknown sites. Safari → Settings → Security → Block pop-up windows.' }, severityWeight: 13, showIf: { questionId: 'symptoms', anyOf: ['popups'] } },
       { id: 'secure-accounts', stepTitle: 'Secure accounts if you shared a password or code', whyItMatters: 'A device symptom plus a shared sign-in secret deserves an account check, not just a device scan.', exactInstructions: 'From a separate trusted device if possible, open the affected service directly. Change the password, sign out unknown sessions, and contact your bank if payment information was involved.', severityWeight: 22, showIf: { questionId: 'money', anyOf: ['yes', 'unsure'] }, recommendedTool: passwordTool },
-      { id: 'trusted-support', stepTitle: 'Ask a trusted technician if symptoms continue', whyItMatters: 'A professional can inspect the device without sending you to an unsolicited “support” number.', exactInstructions: 'Use the manufacturer’s official support channel, your organization’s IT team, or a technician you already trust. Do not grant remote access to someone who contacted you unexpectedly.', severityWeight: 8 },
+      { id: 'trusted-support', stepTitle: 'Protect public charging ports and ask a trusted technician if symptoms continue', whyItMatters: 'Using your own wall adapter (or a USB data blocker) prevents untrusted public ports from prompting data connections, and a local technician can inspect persistent issues safely.', exactInstructions: 'Avoid plugging directly into public USB data ports without a data-blocking adapter. For persistent issues, use the manufacturer’s official support channel or a local technician you trust.', severityWeight: 8, recommendedTool: usbBlockerTool },
     ],
     seoGuide: {
       whatHappensSummary: 'Sudden battery drain, overheating, or pop-up notifications are most often caused by rogue browser notification permissions, background app indexing after an OS update, or a weak cellular signal—not remote spyware.',
