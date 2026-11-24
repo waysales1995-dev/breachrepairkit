@@ -7,7 +7,7 @@ export function amazonSearchUrl(query: string) {
 }
 
 export const affiliateConfig: Record<
-  ToolCategory | 'senior-call-blocker' | 'senior-phone' | 'usb-data-blocker',
+  ToolCategory | 'senior-call-blocker' | 'senior-phone' | 'usb-data-blocker' | 'rfid-wallet',
   { label: string; url: string; categoryName: string }
 > = {
   'password-manager': {
@@ -49,5 +49,10 @@ export const affiliateConfig: Record<
     label: 'PortaPow USB-C / USB-A Data Blocker',
     url: amazonSearchUrl('PortaPow USB C data blocker'),
     categoryName: 'USB charging data blockers',
+  },
+  'rfid-wallet': {
+    label: 'RFID-Blocking Card Sleeve & Wallet Protector',
+    url: amazonSearchUrl('RFID blocking card holder wallet sleeve'),
+    categoryName: 'Physical card protection',
   },
 };

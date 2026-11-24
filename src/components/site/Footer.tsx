@@ -21,7 +21,8 @@ export default function Footer() {
           <h2 className="text-xs font-bold uppercase tracking-[.12em] text-slate-400">Family & transparency</h2>
           <ul className="mt-4 grid gap-2.5 text-sm text-slate-600">
             <li><Link className="hover:text-blue-700" href="/scam-shield">Senior & family scam shield</Link></li>
-            <li><Link className="hover:text-blue-700" href="/disclosure">Affiliate disclosure</Link></li>
+            <li><Link className="hover:text-blue-700" href="/editorial-policy" className="hover:text-slate-900">Editorial Policy</Link>
+            <Link href="/disclosure">Affiliate disclosure</Link></li>
             <li><Link className="hover:text-blue-700" href="/privacy">Privacy policy</Link></li>
             <li><a className="inline-flex items-center gap-1 hover:text-blue-700" href="https://consumer.ftc.gov/articles/how-recognize-avoid-phishing-scams" target="_blank" rel="noreferrer">FTC phishing guidance <ArrowUpRight size={13} /></a></li>
             <li><a className="inline-flex items-center gap-1 hover:text-blue-700" href="https://consumer.ftc.gov/articles/how-spot-avoid-and-report-tech-support-scams" target="_blank" rel="noreferrer">FTC tech-support scams <ArrowUpRight size={13} /></a></li>

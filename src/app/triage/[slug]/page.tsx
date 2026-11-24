@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { AlertOctagon, ArrowRight, Eye, HelpCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2, ShieldAlert } from 'lucide-react';
 import TriageWizard from '@/components/triage/TriageWizard';
-import { getTriageScenario, triageScenarios } from '@/data/triageScenarios';
+import { getScenarioBySlug, triageScenarios } from '@/data/triageScenarios';
 
 export const dynamicParams = false;
 
@@ -13,16 +13,16 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const scenario = getTriageScenario(slug);
-  if (!scenario) return { title: 'Incident guide not found' };
+  const scenario = getScenarioBySlug(slug);
+  if (!scenario) return { title: 'Checklist not found' };
   return {
-    title: scenario.seoTitle,
-    description: scenario.metaDescription,
+    title: scenario.title,
+    description: scenario.heroSubheadline,
+    keywords: scenario.searchKeywords,
     alternates: { canonical: `/triage/${scenario.slug}` },
     openGraph: {
-      title: scenario.seoTitle,
-      description: scenario.metaDescription,
-      type: 'article',
+      title: scenario.title,
+      description: scenario.heroSubheadline,
       url: `https://breachresponsekit.com/triage/${scenario.slug}`,
     },
   };
@@ -30,125 +30,107 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function TriageScenarioPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const scenario = getTriageScenario(slug);
+  const scenario = getScenarioBySlug(slug);
   if (!scenario) notFound();
 
-  const relatedScenarios = triageScenarios.filter((item) => item.slug !== scenario.slug).slice(0, 3);
+  const currentIndex = triageScenarios.findIndex((s) => s.slug === scenario.slug);
+  const relatedScenarios = [
+    triageScenarios[(currentIndex + 1) % triageScenarios.length],
+    triageScenarios[(currentIndex + 2) % triageScenarios.length],
+    triageScenarios[(currentIndex + 3) % triageScenarios.length],
+  ];
 
-  const faqSchema = scenario.seoGuide?.faqs?.length
-    ? {
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        mainEntity: scenario.seoGuide.faqs.map((faq) => ({
-          '@type': 'Question',
-          name: faq.question,
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: faq.answer,
-          },
-        })),
-      }
-    : null;
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: scenario.faqs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+    })),
+  };
 
   return (
-    <>
-      {faqSchema && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-        />
-      )}
+    <div className="container max-w-4xl py-10 sm:py-14">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
-      <TriageWizard scenario={scenario} />
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Link href="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-slate-900">
+          <ArrowLeft size={15} />
+          All situations
+        </Link>
+        <Link
+          href="/editorial-policy"
+          className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-800 hover:bg-emerald-100"
+        >
+          <CheckCircle2 size={13} />
+          Verified against FTC &amp; CISA guidance · Nov 2026
+        </Link>
+      </div>
 
-      {scenario.seoGuide && (
-        <section className="border-t border-slate-200 bg-white py-14 sm:py-16">
-          <div className="container max-w-4xl">
-            <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 sm:text-3xl">
-              Understanding what happened &amp; what to avoid
-            </h2>
-            <p className="mt-3 text-base leading-7 text-slate-600">
-              {scenario.seoGuide.whatHappensSummary}
-            </p>
+      <header className="mt-7">
+        <div className="kicker">
+          <ShieldAlert size={14} />
+          {scenario.badgeText}
+        </div>
+        <h1 className="mt-3 text-3xl font-extrabold tracking-[-.04em] text-slate-950 sm:text-5xl">
+          {scenario.title}
+        </h1>
+        <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">{scenario.heroSubheadline}</p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {triageScenarios.map((item) => (
+            <Link
+              key={item.slug}
+              href={`/triage/${item.slug}`}
+              className={`rounded-full border px-3 py-1.5 text-xs font-bold transition ${
+                item.slug === scenario.slug
+                  ? 'border-blue-600 bg-blue-600 text-white'
+                  : 'border-slate-200 bg-white text-slate-600 hover:border-blue-200 hover:text-slate-950'
+              }`}
+            >
+              {item.shortLabel}
+            </Link>
+          ))}
+        </div>
+      </header>
 
-            <div className="mt-8 grid gap-5 md:grid-cols-2">
-              <div className="rounded-2xl border border-rose-100 bg-rose-50/60 p-5 sm:p-6">
-                <h3 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide text-rose-900">
-                  <AlertOctagon size={16} className="text-rose-600" />
-                  What NOT to do right now
-                </h3>
-                <ul className="mt-3 grid gap-2.5 text-sm leading-6 text-rose-950/85">
-                  {scenario.seoGuide.doNotDo.map((item) => (
-                    <li key={item} className="flex items-start gap-2">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-rose-500" />
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      <div className="mt-8">
+        <TriageWizard initialSlug={scenario.slug} />
+      </div>
 
-              <div className="rounded-2xl border border-amber-100 bg-amber-50/60 p-5 sm:p-6">
-                <h3 className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-wide text-amber-900">
-                  <Eye size={16} className="text-amber-600" />
-                  Common warning signs
-                </h3>
-                <ul className="mt-3 grid gap-2.5 text-sm leading-6 text-amber-950/85">
-                  {scenario.seoGuide.commonRedFlags.map((flag) => (
-                    <li key={flag} className="flex items-start gap-2">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" />
-                      <span>{flag}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      <section className="card mt-8 p-5 sm:p-7">
+        <h2 className="text-xl font-extrabold tracking-tight text-slate-900">Common questions</h2>
+        <div className="mt-4 divide-y divide-slate-100">
+          {scenario.faqs.map((faq) => (
+            <div key={faq.question} className="py-4 first:pt-0 last:pb-0">
+              <h3 className="text-base font-bold text-slate-900">{faq.question}</h3>
+              <p className="mt-1.5 text-sm leading-6 text-slate-600">{faq.answer}</p>
             </div>
+          ))}
+        </div>
+      </section>
 
-            {scenario.seoGuide.faqs.length > 0 && (
-              <div className="mt-12">
-                <h2 className="flex items-center gap-2 text-xl font-extrabold tracking-tight text-slate-900 sm:text-2xl">
-                  <HelpCircle size={20} className="text-blue-600" />
-                  Frequently asked questions
-                </h2>
-                <div className="mt-5 grid gap-3">
-                  {scenario.seoGuide.faqs.map((faq) => (
-                    <details
-                      key={faq.question}
-                      className="group rounded-2xl border border-slate-200 bg-slate-50/60 p-5 open:bg-white open:shadow-sm"
-                    >
-                      <summary className="cursor-pointer list-none text-base font-bold text-slate-900">
-                        {faq.question}
-                      </summary>
-                      <p className="mt-2.5 text-sm leading-6 text-slate-600">{faq.answer}</p>
-                    </details>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="mt-12 border-t border-slate-200 pt-8">
-              <h3 className="text-xs font-extrabold uppercase tracking-[.12em] text-slate-400">
-                Related incident guides
-              </h3>
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                {relatedScenarios.map((related) => (
-                  <Link
-                    key={related.slug}
-                    href={`/triage/${related.slug}`}
-                    className="group rounded-xl border border-slate-200 bg-slate-50/70 p-4 transition hover:border-blue-200 hover:bg-white"
-                  >
-                    <p className="text-sm font-bold text-slate-900 group-hover:text-blue-700">
-                      {related.heroHeadline}
-                    </p>
-                    <span className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-blue-700">
-                      Open guide <ArrowRight size={13} />
-                    </span>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-    </>
+      <section className="mt-8 rounded-2xl border border-slate-200 bg-slate-50/70 p-5 sm:p-6">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-base font-extrabold text-slate-900">Related incident recovery checklists</h2>
+          <Link href="/scam-shield" className="inline-flex items-center gap-1 text-xs font-bold text-blue-700 hover:underline">
+            Explore Family Scam Shield <ArrowRight size={13} />
+          </Link>
+        </div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          {relatedScenarios.map((rel) => (
+            <Link
+              key={rel.slug}
+              href={`/triage/${rel.slug}`}
+              className="rounded-xl border border-slate-200 bg-white p-4 transition hover:border-blue-300 hover:shadow-sm"
+            >
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-blue-700">{rel.categoryLabel}</span>
+              <p className="mt-1 text-sm font-bold text-slate-900">{rel.shortLabel}</p>
+              <p className="mt-1 line-clamp-2 text-xs leading-5 text-slate-500">{rel.heroSubheadline}</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </div>
   );
 }

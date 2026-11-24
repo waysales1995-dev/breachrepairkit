@@ -660,8 +660,223 @@ export const triageScenarios: TriageScenario[] = [
       ],
     },
   },
+  {
+    slug: 'ezpass-unpaid-toll-text',
+    title: 'Got an E-ZPass or Unpaid Toll Text? What to Do Right Now',
+    shortLabel: 'E-ZPass / Toll Text',
+    categoryLabel: 'Smishing & Toll Scams',
+    heroSubheadline: 'Fake unpaid toll texts pretend to be E-ZPass, SunPass, or FasTrak to steal card details. Follow these calm steps based on what you tapped.',
+    badgeText: 'Toll-road smishing recovery',
+    searchKeywords: ['ezpass text scam', 'unpaid toll text message', 'sunpass scam text', 'fastrak toll phishing'],
+    commonMistake: 'Paying a small $3 to $7 “late toll fee” on a text link—scammers use the small dollar amount to harvest your full card number and security code.',
+    estimatedMinutes: 5,
+    baseSteps: [
+      { id: 'close-toll-site', stepTitle: 'Close the fake toll page and do not enter payment details', whyItMatters: 'State toll agencies do not demand urgent payment through random mobile links or iMessage.', exactInstructions: 'Close the browser tab immediately. If you want to check real tolls, open your state toll agency’s official app or type its website directly into your browser.', severityWeight: 10 },
+      { id: 'report-toll-smishing', stepTitle: 'Forward the text to 7726 (SPAM) and delete it', whyItMatters: 'Reporting helps mobile carriers block the sender number and look-alike domain.', exactInstructions: 'Copy and forward the text to 7726, then use Delete and Report Junk in your messaging app.', severityWeight: 6 },
+    ],
+    conditionalSteps: {
+      payment: [
+        { id: 'cancel-toll-card', stepTitle: 'Call your bank to replace the card entered on the toll site', whyItMatters: 'Toll smishing sites capture card numbers for unauthorized charges and digital wallet provisioning.', exactInstructions: 'Call the number on the back of your card, explain you entered it on a toll-road phishing site, and request a replacement card number and new digital-wallet tokens.', severityWeight: 20, recommendedTool: { toolName: 'Aura Identity & Card Monitoring', badgeText: '24/7 card & identity alerts', description: 'Monitors your credit file, bank accounts, and dark-web leaks if your card and billing address were submitted.', ctaText: 'Check Aura protection', affiliatePlaceholderUrl: 'https://www.aura.com/', category: 'identity-protection' } },
+      ],
+      password: passwordSteps,
+      download: downloadSteps,
+      none: [
+        { id: 'no-toll-loss', stepTitle: 'No payment was submitted—your card is safe', whyItMatters: 'Simply receiving or opening the text does not charge your account.', exactInstructions: 'Delete the message and ignore follow-up texts from unknown international or email-to-text senders.', severityWeight: 5 },
+      ],
+    },
+    faqs: [
+      { question: 'Does E-ZPass send text messages for unpaid tolls?', answer: 'No. E-ZPass and state toll agencies send official invoices by postal mail or display balances inside your verified toll account—never through urgent text links.' },
+      { question: 'What if I already paid the fake toll text?', answer: 'Call the customer service number on the back of your debit or credit card immediately, dispute the charge if it posts, and ask the bank to issue a new card number.' },
+    ],
+  },
+  {
+    slug: 'fedex-delivery-text-scam',
+    title: 'Clicked a Fake FedEx Delivery Text? Immediate Recovery Plan',
+    shortLabel: 'Fake FedEx Text',
+    categoryLabel: 'Delivery Smishing',
+    heroSubheadline: 'Fake FedEx redelivery and address-correction texts aim to capture card numbers or account logins. Check what you did and lock things down.',
+    badgeText: 'Package smishing response',
+    searchKeywords: ['fedex text scam', 'clicked fake fedex link', 'fedex delivery phishing text'],
+    commonMistake: 'Re-entering a credit card for a “$0.30 redelivery fee” after the first card declines—scammers capture every card you try.',
+    estimatedMinutes: 5,
+    baseSteps: [
+      { id: 'exit-fedex-clone', stepTitle: 'Leave the fake tracking page right away', whyItMatters: 'Look-alike tracking pages mimic FedEx branding to collect addresses, card numbers, and passwords.', exactInstructions: 'Close the tab. To check a real package, go directly to fedex.com and enter the tracking number from your retailer’s order confirmation.', severityWeight: 10 },
+      { id: 'report-fedex-spam', stepTitle: 'Report the text as spam to your carrier (7726)', whyItMatters: 'Blocks repeat smishing waves from the same sender.', exactInstructions: 'Forward the text to 7726 and delete it from your inbox.', severityWeight: 6 },
+    ],
+    conditionalSteps: {
+      payment: paymentSteps,
+      password: passwordSteps,
+      download: downloadSteps,
+      none: [
+        { id: 'fedex-link-only', stepTitle: 'Opening the link without entering details is low risk', whyItMatters: 'Mobile browsers sandbox web pages unless you type information or install an app.', exactInstructions: 'Clear your browser history/site data if desired and delete the text.', severityWeight: 5 },
+      ],
+    },
+    faqs: [
+      { question: 'How do I spot a fake FedEx text?', answer: 'Real FedEx texts never ask for credit card details or direct you to non-fedex.com domains to update a delivery address.' },
+      { question: 'Should I freeze my credit if I entered my address and card?', answer: 'Replacing the card stops unauthorized charges. If you also entered your date of birth or Social Security number, place free credit freezes at Equifax, Experian, and TransUnion.' },
+    ],
+  },
+  {
+    slug: 'ups-package-text-scam',
+    title: 'Fake UPS Package Text Scam: Step-by-Step Safety Checklist',
+    shortLabel: 'Fake UPS Text',
+    categoryLabel: 'Delivery Smishing',
+    heroSubheadline: 'Received a text claiming a UPS parcel is on hold due to an incomplete address or customs fee? Here is how to verify safely and recover.',
+    badgeText: 'Delivery text triage',
+    searchKeywords: ['ups text scam', 'ups package hold text', 'clicked ups phishing link'],
+    commonMistake: 'Trusting a link just because you actually ordered something online this week—scammers send millions of texts knowing many recipients are expecting a box.',
+    estimatedMinutes: 5,
+    baseSteps: [
+      { id: 'close-ups-phish', stepTitle: 'Close the fake UPS window without submitting forms', whyItMatters: 'Prevents harvesting of payment cards, billing addresses, or UPS My Choice credentials.', exactInstructions: 'Close the browser tab and check real deliveries only via ups.com or your retailer’s official order page.', severityWeight: 10 },
+      { id: 'spam-ups-sms', stepTitle: 'Delete and report the SMS as junk', whyItMatters: 'Stops accidental taps later.', exactInstructions: 'Use Report Junk in Messages or forward the message to 7726.', severityWeight: 6 },
+    ],
+    conditionalSteps: {
+      payment: paymentSteps,
+      password: passwordSteps,
+      download: downloadSteps,
+      none: [
+        { id: 'ups-safe-check', stepTitle: 'No info entered means no account compromise', whyItMatters: 'Viewing a fake tracking page alone does not expose your accounts.', exactInstructions: 'Delete the text and keep automatic browser updates turned on.', severityWeight: 5 },
+      ],
+    },
+    faqs: [
+      { question: 'Does UPS charge a text-message fee to redeliver a package?', answer: 'No. UPS does not send unsolicited texts asking for a credit card number to release or reschedule a standard delivery.' },
+      { question: 'What if I entered my email and password on the fake UPS page?', answer: 'Change that password immediately—especially if you reuse it on your email or bank—and turn on two-step verification.' },
+    ],
+  },
+  {
+    slug: 'chase-fraud-alert-text',
+    title: 'Fake Chase Fraud Alert Text or Call: Immediate Action Plan',
+    shortLabel: 'Fake Chase Alert',
+    categoryLabel: 'Bank Impersonation',
+    heroSubheadline: 'Scammers spoof Chase fraud-alert texts and follow up with a phone call asking for a one-time code or Zelle transfer. Use this checklist right now.',
+    badgeText: 'Bank impersonation triage',
+    searchKeywords: ['chase fraud alert text scam', 'fake chase text message', 'chase impersonation call scam'],
+    commonMistake: 'Reading a 6-digit verification code to someone who called right after you replied NO to a fraud text—that code lets them enroll your card or reset your login.',
+    estimatedMinutes: 7,
+    baseSteps: [
+      { id: 'hangup-chase-spoof', stepTitle: 'Hang up and call the number on the back of your Chase card', whyItMatters: 'Caller ID can display Chase’s real support number even when a scammer is calling.', exactInstructions: 'End any active call, look at the physical Chase debit or credit card in your wallet, and dial the official number printed on the back.', severityWeight: 16 },
+      { id: 'check-chase-app', stepTitle: 'Check your official Chase mobile app for real alerts', whyItMatters: 'Genuine fraud alerts appear inside the official Chase app without needing a text link.', exactInstructions: 'Open the Chase app directly from your home screen and review recent transactions and linked devices.', severityWeight: 12 },
+    ],
+    conditionalSteps: {
+      password: passwordSteps,
+      payment: paymentSteps,
+      download: downloadSteps,
+      none: [
+        { id: 'chase-no-reply', stepTitle: 'No codes or logins shared—you stayed ahead of the scam', whyItMatters: 'Replying or ignoring the text without sharing codes leaves your account protected.', exactInstructions: 'Delete the text and confirm push notifications are enabled in your official banking app.', severityWeight: 6 },
+      ],
+    },
+    faqs: [
+      { question: 'Will Chase ever ask me to read a one-time passcode over the phone?', answer: 'No. Chase representatives will never ask you to read back a one-time verification code or tell you to send money via Zelle to “protect” your account.' },
+      { question: 'What if I shared a verification code with a fake fraud agent?', answer: 'Call the number on the back of your card immediately, ask the fraud department to lock online access and reissue affected cards, and reset your Chase password.' },
+    ],
+  },
+  {
+    slug: 'bank-of-america-scam-text',
+    title: 'Fake Bank of America Alert Text: Steps to Protect Your Account',
+    shortLabel: 'Fake BofA Text',
+    categoryLabel: 'Bank Impersonation',
+    heroSubheadline: 'Spoofed Bank of America texts often claim a Zelle transfer or card purchase is pending. Follow these steps using only official channels.',
+    badgeText: 'Bank text recovery',
+    searchKeywords: ['bank of america text scam', 'fake bank of america fraud alert', 'bofa zelle text scam'],
+    commonMistake: 'Logging into a link inside the SMS instead of opening the official Bank of America app directly.',
+    estimatedMinutes: 7,
+    baseSteps: [
+      { id: 'call-bofa-card', stepTitle: 'Dial the official number on the back of your card', whyItMatters: 'Direct outbound calls bypass spoofed caller ID and fake support numbers.', exactInstructions: 'Do not call any phone number listed inside the text message. Use only the number printed on your physical bank card.', severityWeight: 16 },
+      { id: 'verify-bofa-app', stepTitle: 'Review recent activity in the official Bank of America app', whyItMatters: 'Confirms whether any real transaction or security alert exists.', exactInstructions: 'Open the Bank of America app directly and check Alerts and Security Center.', severityWeight: 12 },
+    ],
+    conditionalSteps: {
+      password: passwordSteps,
+      payment: paymentSteps,
+      download: downloadSteps,
+      none: [
+        { id: 'bofa-safe-state', stepTitle: 'No credentials entered—your account remains secure', whyItMatters: 'Scammers rely on you logging into their look-alike page.', exactInstructions: 'Delete the message and report it as spam.', severityWeight: 6 },
+      ],
+    },
+    faqs: [
+      { question: 'How can I tell if a Bank of America text is fake?', answer: 'Texts containing clickable web links to “verify” a Zelle payment or unlock your account are phishing attempts. Open your banking app directly instead.' },
+      { question: 'What should I do if I logged into a fake bank website?', answer: 'Call the number on the back of your card immediately to freeze online banking, change your password from the real app, and review recent transfers.' },
+    ],
+  },
+  {
+    slug: 'cash-app-scam-recovery',
+    title: 'Cash App or PayPal Scam: Immediate Steps to Secure Your Account',
+    shortLabel: 'Cash App / PayPal Scam',
+    categoryLabel: 'Payment App Fraud',
+    heroSubheadline: 'Whether you clicked a fake PayPal invoice, shared a Cash App sign-in code, or sent money to an impersonator, follow this recovery sequence.',
+    badgeText: 'Payment app recovery',
+    searchKeywords: ['cash app scam recovery', 'paypal invoice scam', 'cash app hacked what to do'],
+    commonMistake: 'Calling a “Cash App support” phone number found in a text or Google search ad—real support is inside the app.',
+    estimatedMinutes: 8,
+    baseSteps: [
+      { id: 'lock-payment-app', stepTitle: 'Change your PIN, revoke active sessions, and check linked cards', whyItMatters: 'Stops an attacker from draining your linked debit card or bank balance.', exactInstructions: 'Open Cash App or PayPal directly, change your password/PIN, remove unrecognized devices, and verify your email and phone number under Security settings.', severityWeight: 16 },
+      { id: 'dispute-linked-bank', stepTitle: 'Contact your linked bank or card issuer immediately', whyItMatters: 'If the payment pulled from a debit or credit card, your bank’s fraud team can help block further pulls.', exactInstructions: 'Call the number on the back of the debit or credit card linked to the app and report unauthorized transactions.', severityWeight: 15 },
+    ],
+    conditionalSteps: {
+      password: passwordSteps,
+      payment: paymentSteps,
+      download: downloadSteps,
+      none: [
+        { id: 'ignore-fake-invoice', stepTitle: 'Do not pay or call numbers on fake PayPal invoices', whyItMatters: 'Scammers send real PayPal money requests with fake “call to cancel” notes.', exactInstructions: 'Decline or ignore the request inside the official PayPal app without calling the phone number in the note.', severityWeight: 7 },
+      ],
+    },
+    faqs: [
+      { question: 'Why did I get a real PayPal email for a purchase I did not make?', answer: 'Scammers abuse PayPal’s invoice feature to send payment requests containing a fake support phone number. Never call the number inside an invoice note.' },
+      { question: 'Can I get money back from a Cash App scam?', answer: 'Report the payment inside the official app immediately and contact the bank or card issuer linked to your account to ask about unauthorized-transaction protections.' },
+    ],
+  },
+  {
+    slug: 'apple-id-locked-phishing',
+    title: 'Fake Apple ID Locked Alert or Account Takeover: Recovery Steps',
+    shortLabel: 'Apple ID / iCloud Alert',
+    categoryLabel: 'Account Security',
+    heroSubheadline: 'Got a text or popup claiming your Apple ID or iCloud is locked, or noticed an unrecognized Apple sign-in? Secure your Apple Account safely.',
+    badgeText: 'Apple Account triage',
+    searchKeywords: ['apple id locked text scam', 'apple account hacked recovery', 'icloud phishing alert'],
+    commonMistake: 'Signing into a link from a text message instead of opening Settings on your iPhone or going directly to account.apple.com.',
+    estimatedMinutes: 8,
+    baseSteps: [
+      { id: 'check-apple-settings', stepTitle: 'Open Settings on your iPhone/Mac or visit account.apple.com directly', whyItMatters: 'Real Apple Account security notices appear directly in your device Settings.', exactInstructions: 'Tap your name at the top of Settings → Sign-In & Security, and check your trusted phone numbers and device list.', severityWeight: 15 },
+      { id: 'reset-apple-password', stepTitle: 'Change your Apple Account password and remove unknown devices', whyItMatters: 'Signs out any unauthorized sessions and protects iCloud backups and Find My.', exactInstructions: 'In Settings → Sign-In & Security, change your password, review every device listed at the bottom, and remove any device you do not recognize.', severityWeight: 16, recommendedTool: hardwareKeyTool },
+    ],
+    conditionalSteps: {
+      password: passwordSteps,
+      payment: paymentSteps,
+      download: downloadSteps,
+      none: [
+        { id: 'apple-phish-safe', stepTitle: 'You did not sign into the fake page—your Apple Account is safe', whyItMatters: 'Fake “Apple ID suspended” texts only work if you type your credentials on their site.', exactInstructions: 'Forward phishing texts/emails to reportphishing@apple.com and delete them.', severityWeight: 6 },
+      ],
+    },
+    faqs: [
+      { question: 'Does Apple send text messages saying my Apple ID is locked?', answer: 'No. Apple never sends unsolicited SMS links asking you to sign in to unlock your Apple Account or iCloud.' },
+      { question: 'How do I make my Apple Account phishing-proof?', answer: 'Enable two-factor authentication and consider registering two FIDO2 physical security keys (such as YubiKey 5 NFC) under Sign-In & Security.' },
+    ],
+  },
+  {
+    slug: 'google-account-recovery-hacked',
+    title: 'Google Account Hacked or Suspicious Sign-In: Recovery Checklist',
+    shortLabel: 'Google Account Recovery',
+    categoryLabel: 'Account Security',
+    heroSubheadline: 'Your Google Account controls Gmail, Drive, YouTube, and password resets for other sites. Follow this exact sequence to lock out intruders.',
+    badgeText: 'Google & Gmail recovery',
+    searchKeywords: ['google account hacked recovery', 'suspicious sign in prevented google', 'recover hacked gmail account'],
+    commonMistake: 'Changing your Google password without checking forwarding rules, recovery phone numbers, or third-party app permissions.',
+    estimatedMinutes: 9,
+    baseSteps: [
+      { id: 'google-security-checkup', stepTitle: 'Run Google Security Checkup and sign out unknown devices', whyItMatters: 'Immediately kicks out any active browser or mobile session.', exactInstructions: 'Go directly to myaccount.google.com/security, open Your devices, and sign out every unfamiliar computer or phone.', severityWeight: 18 },
+      { id: 'google-passkey-upgrade', stepTitle: 'Reset your Google password and add a Passkey or Security Key', whyItMatters: 'Blocks phishing pages even if an attacker guesses or steals a password.', exactInstructions: 'Update your Google password to a unique passphrase, verify your recovery email and phone number, and enable Passkeys or a hardware security key.', severityWeight: 16, recommendedTool: hardwareKeyTool },
+      { id: 'gmail-forwarding-audit', stepTitle: 'Check Gmail forwarding and filters for hidden rules', whyItMatters: 'Attackers often add silent forwarding rules to intercept bank reset emails.', exactInstructions: 'In Gmail Settings → Forwarding and POP/IMAP and Filters and Blocked Addresses, delete any forwarding address or filter you did not create.', severityWeight: 15 },
+    ],
+    conditionalSteps: {
+      password: passwordSteps,
+      payment: paymentSteps,
+      download: downloadSteps,
+      none: [
+        { id: 'google-blocked-alert', stepTitle: 'If Google blocked the sign-in, changing your password still closes the door', whyItMatters: 'A “Sign-in attempt was blocked” alert means someone already has your password.', exactInstructions: 'Update your password immediately so they cannot try again from another location.', severityWeight: 10 },
+      ],
+    },
+    faqs: [
+      { question: 'What should I do first if my Google Account was hacked?', answer: 'Visit g.co/recover or myaccount.google.com/security immediately, sign out unknown devices, reset your password, and audit your recovery phone/email and Gmail forwarding settings.' },
+      { question: 'Why do hackers target Gmail first?', answer: 'Because Gmail receives password-reset links for your bank, social media, and shopping accounts. Securing Gmail first protects every linked service.' },
+    ],
+  },
 ];
-
-export function getTriageScenario(slug: string) {
-  return triageScenarios.find((scenario) => scenario.slug === slug);
-}
