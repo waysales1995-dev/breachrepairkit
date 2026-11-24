@@ -1,30 +1,38 @@
 import type { ToolCategory } from './triageScenarios';
 
-/** Replace each example URL with your approved affiliate destination before publishing. */
-export const affiliateConfig: Record<ToolCategory, { label: string; url: string; categoryName: string }> = {
+/** Replace each URL with your approved affiliate tracking link as soon as each partner approves you. */
+export const affiliateConfig: Record<
+  ToolCategory | 'senior-call-blocker',
+  { label: string; url: string; categoryName: string }
+> = {
   'password-manager': {
-    label: 'Password manager',
-    url: 'https://example.com/replace-with-your-affiliate-link/password-manager',
+    label: 'NordPass Password Manager',
+    url: 'https://nordpass.com/',
     categoryName: 'Password managers',
   },
   'identity-protection': {
-    label: 'Identity monitoring',
-    url: 'https://example.com/replace-with-your-affiliate-link/identity-protection',
+    label: 'Aura Identity Protection',
+    url: 'https://www.aura.com/',
     categoryName: 'Identity-protection services',
   },
   antivirus: {
-    label: 'Device security software',
-    url: 'https://example.com/replace-with-your-affiliate-link/device-security',
+    label: 'Malwarebytes Device Security',
+    url: 'https://www.malwarebytes.com/',
     categoryName: 'Device security tools',
   },
   'data-removal': {
-    label: 'Data-removal service',
-    url: 'https://example.com/replace-with-your-affiliate-link/data-removal',
+    label: 'Incogni Data Removal',
+    url: 'https://incogni.com/',
     categoryName: 'Data-removal services',
   },
   'hardware-key': {
-    label: 'Hardware security key',
-    url: 'https://example.com/replace-with-your-affiliate-link/hardware-key',
+    label: 'YubiKey 5 NFC Hardware Key',
+    url: 'https://www.yubico.com/',
     categoryName: 'Hardware security keys',
+  },
+  'senior-call-blocker': {
+    label: 'CPR Call Blocker V5000 (Amazon)',
+    url: 'https://www.amazon.com/s?k=CPR+Call+Blocker+V5000',
+    categoryName: 'Senior call-blocking hardware',
   },
 };

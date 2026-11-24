@@ -113,6 +113,15 @@ const dataRemovalTool: RecommendedTool = {
   category: 'data-removal',
 };
 
+const hardwareKeyTool: RecommendedTool = {
+  toolName: 'Hardware security key (YubiKey)',
+  badgeText: 'Phishing-resistant 2FA upgrade',
+  description: 'Unlike SMS codes that scammers can trick you into reading aloud, a physical USB/NFC security key blocks sign-ins on fake look-alike websites.',
+  ctaText: 'View YubiKey options',
+  affiliatePlaceholderUrl: 'https://www.yubico.com/',
+  category: 'hardware-key',
+};
+
 const passwordSteps: RecoveryStep[] = [
   {
     id: 'secure-password',
@@ -161,6 +170,7 @@ const passwordSteps: RecoveryStep[] = [
       mac: 'Visit the account’s official website directly → Security → Two-factor authentication. Store recovery codes somewhere private and offline.',
     },
     severityWeight: 11,
+    recommendedTool: hardwareKeyTool,
   },
 ];
 

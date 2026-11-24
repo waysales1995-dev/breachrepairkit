@@ -77,7 +77,7 @@ function StepCard({ step, done, onToggle, defaultPlatform }: { step: RecoverySte
                   <p className="mt-1 text-sm font-bold text-slate-900">{tool.toolName}</p>
                   <p className="mt-1 text-xs leading-5 text-slate-600">{tool.description}</p>
                   <a href={configured.url || tool.affiliatePlaceholderUrl} target="_blank" rel="sponsored noopener noreferrer" className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-blue-700 hover:underline">{tool.ctaText}<ExternalLink size={12} /></a>
-                  <p className="mt-1 text-[10px] leading-4 text-slate-400">Example affiliate destination—replace before launch. See our <a className="underline" href="/disclosure">disclosure</a>.</p>
+                  <p className="mt-1 text-[10px] leading-4 text-slate-400">Partner link · We may earn a commission at no cost to you. See our <a className="underline" href="/disclosure">disclosure</a>.</p>
                 </div>
               </div>
             </div>;

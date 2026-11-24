@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Check, Circle, Printer, ShieldCheck } from 'lucide-react';
+import { Check, Circle, ExternalLink, PhoneOff, Printer, ShieldCheck } from 'lucide-react';
+import { affiliateConfig } from '@/data/affiliateConfig';
 
 const items = [
   { id: 'callers', title: 'Review unknown-caller settings together', detail: 'On iPhone, go to Settings → Apps → Phone → Screen Unknown Callers. Choose Ask Reason for Calling or Silence if it suits the household. Keep important contacts saved.' },
@@ -16,17 +17,21 @@ export default function LockdownBlueprint() {
   const [checked, setChecked] = useState<string[]>([]);
   const [ready, setReady] = useState(false);
   const [safeWord, setSafeWord] = useState('');
+  const callBlocker = affiliateConfig['senior-call-blocker'];
+
   /* eslint-disable react-hooks/set-state-in-effect -- restore the family checklist from this browser on mount */
   useEffect(() => {
     try { const raw = window.localStorage.getItem('brk:family-lockdown'); if (raw) setChecked((JSON.parse(raw) as string[]).filter((id) => items.some((item) => item.id === id))); } catch { /* ignore malformed data */ }
     setReady(true);
   }, []);
   /* eslint-enable react-hooks/set-state-in-effect */
+
   function toggle(id: string) {
     const next = checked.includes(id) ? checked.filter((item) => item !== id) : [...checked, id];
     setChecked(next);
     try { window.localStorage.setItem('brk:family-lockdown', JSON.stringify(next)); } catch { /* checklist still works for this visit */ }
   }
+
   return (
     <section className="card p-5 sm:p-7" id="lockdown-blueprint">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -41,6 +46,26 @@ export default function LockdownBlueprint() {
           </button>;
         })}
       </div>
+
+      <div className="no-print mt-5 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 sm:p-5">
+        <div className="flex items-start gap-3.5">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+            <PhoneOff size={19} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-[.1em] text-blue-700">Optional hardware safeguard</span>
+              <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-slate-600 border border-slate-200">For home landlines</span>
+            </div>
+            <p className="mt-1 text-sm font-bold text-slate-900">Physical One-Touch Scam Call Blocker</p>
+            <p className="mt-1 text-xs leading-5 text-slate-600">If an older parent still uses a home landline, a physical call-blocker box screens out known robocallers before the phone rings and adds a physical red “Block Now” button next to the handset.</p>
+            <a href={callBlocker.url} target="_blank" rel="sponsored noopener noreferrer" className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 hover:underline">
+              Check call-blocker options on Amazon <ExternalLink size={12} />
+            </a>
+          </div>
+        </div>
+      </div>
+
       <div className="mt-6 grid gap-5 rounded-2xl border border-indigo-100 bg-indigo-50/70 p-4 sm:grid-cols-[1fr_.9fr] sm:p-5">
         <div><h3 className="text-sm font-bold text-indigo-950">Make a family safe word</h3><p className="mt-1.5 text-xs leading-5 text-indigo-900/75">Agree on a private phrase together, in person. This box is not saved or sent anywhere. Only include it in a printout if you can keep the paper private and secure.</p><label htmlFor="safe-word" className="mt-3 block text-xs font-bold text-slate-700">Family safe word or question</label><input id="safe-word" value={safeWord} onChange={(event) => setSafeWord(event.target.value)} placeholder="Type a phrase to print (not stored)" autoComplete="off" className="mt-1.5 w-full rounded-lg border border-indigo-200 bg-white px-3 py-2.5 text-sm outline-none placeholder:text-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100" /></div>
         <div className="rounded-xl border border-indigo-200 bg-white p-4">
