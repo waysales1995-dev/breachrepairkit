@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { AlertTriangle, CheckCircle2, ExternalLink, Headphones, MessageSquareWarning, Phone, Play, ShieldCheck, X, XCircle } from 'lucide-react';
+import { AlertTriangle, Check, CheckCircle2, ExternalLink, Headphones, MessageSquareWarning, Phone, Play, Share2, ShieldCheck, X, XCircle } from 'lucide-react';
 import type { ScamTab } from '@/data/scamScenarios';
 
 const tabs: { id: ScamTab; label: string }[] = [
@@ -30,6 +30,7 @@ export default function ScamSimulator({ initialTab = 'bank-text' }: { initialTab
   const [popupSafe, setPopupSafe] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [voiceAvailable, setVoiceAvailable] = useState(true);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => () => { if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel(); }, []);
 
@@ -51,14 +52,41 @@ export default function ScamSimulator({ initialTab = 'bank-text' }: { initialTab
     setPlaying(false); setClue(''); setPopupSafe(false); setActive(tab);
   }
 
+  async function shareSimulator() {
+    const shareUrl = typeof window !== 'undefined' ? window.location.href : 'https://breachresponsekit.com/scam-shield';
+    const shareData = {
+      title: 'Practice Spotting Scams Together — Breach Response Kit',
+      text: 'Try this quick interactive scam practice tool so we can spot fake bank texts and AI voice calls together:',
+      url: shareUrl,
+    };
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch {
+        /* fallback to clipboard */
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      /* ignore */
+    }
+  }
+
   const cluePanel = clue && clueCopy[clue] ? <motion.div key={clue} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} className="mt-4 rounded-xl border border-blue-100 bg-blue-50 p-4" role="status"><p className="text-sm font-bold text-blue-950">{clueCopy[clue].title}</p><p className="mt-1.5 text-sm leading-6 text-blue-900/80">{clueCopy[clue].text}</p></motion.div> : <div className="mt-4 rounded-xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-500">Tap one of the highlighted details to see what it is trying to make you do.</div>;
 
   return (
     <div className="card overflow-hidden">
-      <div className="border-b border-slate-100 bg-white px-4 pt-4 sm:px-6 sm:pt-6">
+      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 bg-white px-4 pt-4 sm:px-6 sm:pt-6">
         <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="Scam practice scenarios">
           {tabs.map((tab) => <button key={tab.id} role="tab" aria-selected={active === tab.id} type="button" onClick={() => selectTab(tab.id)} className={`rounded-t-xl border-b-2 px-3 py-3 text-xs font-bold transition sm:px-4 sm:text-sm ${active === tab.id ? 'border-blue-600 bg-blue-50/70 text-blue-800' : 'border-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-800'}`}>{tab.label}</button>)}
         </div>
+        <button type="button" onClick={shareSimulator} className="mb-2 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 transition hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
+          {copied ? <><Check size={14} className="text-emerald-600" />Link copied!</> : <><Share2 size={14} />Send to a parent</>}
+        </button>
       </div>
       <div className="grid gap-6 p-4 sm:p-6 lg:grid-cols-[.9fr_1.1fr] lg:gap-8">
         <div>
@@ -92,7 +120,7 @@ export default function ScamSimulator({ initialTab = 'bank-text' }: { initialTab
           </div>}
           {active === 'voice-clone' && <div className="mx-auto max-w-[430px] rounded-2xl border border-slate-200 bg-gradient-to-b from-indigo-50 to-white p-5 sm:p-6">
             <div className="flex items-center gap-3"><div className="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-100 text-indigo-700"><Headphones size={20} /></div><div><p className="text-sm font-bold text-slate-900">A family emergency call</p><p className="text-[11px] text-slate-500">Computer-generated demo voice · not an imitation</p></div></div>
-            <div className={`wave-active mt-7 flex h-16 items-center justify-center gap-[3px] rounded-xl bg-white px-4 ${playing ? 'wave-active' : ''}`} aria-label="Illustrative synthetic voice waveform">{Array.from({ length: 45 }, (_, i) => <span key={i} className="wave-bar w-[3px] rounded-full bg-indigo-400" style={{ height: `${10 + ((i * 17 + 13) % 34)}px`, animationDelay: `${(i % 9) * .07}s` }} />)}</div>
+            <div className={`mt-7 flex h-16 items-center justify-center gap-[3px] rounded-xl bg-white px-4 ${playing ? 'wave-active' : ''}`} aria-label="Illustrative synthetic voice waveform">{Array.from({ length: 45 }, (_, i) => <span key={i} className="wave-bar w-[3px] rounded-full bg-indigo-400" style={{ height: `${10 + ((i * 17 + 13) % 34)}px`, animationDelay: `${(i % 9) * .07}s` }} />)}</div>
             <button type="button" onClick={playing ? () => { window.speechSynthesis.cancel(); setPlaying(false); } : playSample} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-700 py-3 text-sm font-bold text-white transition hover:bg-indigo-800">{playing ? <><X size={16} />Stop sample</> : <><Play size={16} fill="currentColor" />Play synthetic sample</>}</button>
             {!voiceAvailable && <p className="mt-2 text-xs text-slate-500">Speech playback is not available in this browser. The transcript below is still usable.</p>}
             <p className="mt-4 text-[10px] font-bold uppercase tracking-[.11em] text-slate-400">Sample transcript · tap the clues</p>
