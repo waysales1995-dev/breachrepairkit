@@ -26,7 +26,7 @@ export default function Header() {
       <div className="container flex h-[74px] items-center justify-between gap-4">
         <Link href="/" className="flex shrink-0 items-center gap-2.5" aria-label="Breach Response Kit home" onClick={() => setOpen(false)}>
           <BrandMark />
-          <span className="text-[15px] font-extrabold tracking-[-.045em] text-slate-900 sm:text-base">Breach<span className="text-blue-600">Repair</span>Kit</span>
+          <span className="text-[15px] font-extrabold tracking-[-.045em] text-slate-900 sm:text-base">Breach<span className="text-blue-600">Response</span>Kit</span>
         </Link>
         <nav className="hidden items-center gap-7 md:flex" aria-label="Main navigation">
           {links.map((link) => <Link key={link.href} href={link.href} className="text-[13px] font-semibold text-slate-600 transition hover:text-blue-700">{link.label}</Link>)}
