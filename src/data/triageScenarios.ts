@@ -37,6 +37,18 @@ export interface RecoveryStep {
   externalLabel?: string;
 }
 
+export interface ScenarioFaq {
+  question: string;
+  answer: string;
+}
+
+export interface ScenarioSeoGuide {
+  whatHappensSummary: string;
+  doNotDo: string[];
+  commonRedFlags: string[];
+  faqs: ScenarioFaq[];
+}
+
 export interface TriageScenario {
   slug: string;
   seoTitle: string;
@@ -49,6 +61,7 @@ export interface TriageScenario {
   icon: 'link' | 'bell' | 'package' | 'phone' | 'bank' | 'mail';
   questions: DiagnosticQuestion[];
   checklistSteps: RecoveryStep[];
+  seoGuide?: ScenarioSeoGuide;
 }
 
 const deviceQuestion: DiagnosticQuestion = {
@@ -89,6 +102,15 @@ const securityTool: RecommendedTool = {
   ctaText: 'Review security options',
   affiliatePlaceholderUrl: 'https://example.com/replace-with-your-affiliate-link/device-security',
   category: 'antivirus',
+};
+
+const dataRemovalTool: RecommendedTool = {
+  toolName: 'Data-broker removal service',
+  badgeText: 'Optional privacy reduction',
+  description: 'Data-removal tools submit opt-out requests to public people-search databases so scammers have fewer personal details to target you with.',
+  ctaText: 'Review data-removal options',
+  affiliatePlaceholderUrl: 'https://example.com/replace-with-your-affiliate-link/data-removal',
+  category: 'data-removal',
 };
 
 const passwordSteps: RecoveryStep[] = [
@@ -165,6 +187,33 @@ export const triageScenarios: TriageScenario[] = [
       { id: 'scan-download', stepTitle: 'Check your device if a file or app was downloaded', whyItMatters: 'An unexpected download deserves a check, especially if you opened the file or granted permissions.', exactInstructions: 'Do not open the file again. Update your device and use its built-in security tools to scan. Remove an app or profile you do not recognize; if you are unsure, ask a trusted technician before deleting work or system files.', platformInstructions: { iphone: 'If you installed a profile: Settings → General → VPN & Device Management. Remove only a profile you know you did not install; contact your organization if this is a managed phone.', android: 'Open Play Store → profile picture → Play Protect → Scan. Review Settings → Apps for recently installed apps you do not recognize.', windows: 'Open Windows Security → Virus & threat protection → Quick scan. Do not run the downloaded file.', mac: 'Open System Settings → General → Login Items & Extensions and review unfamiliar items. Update macOS, then use a trusted security tool if you still suspect malware.' }, severityWeight: 19, showIf: { questionId: 'download', anyOf: ['yes', 'unsure'] }, recommendedTool: securityTool },
       { id: 'report-phishing', stepTitle: 'Report and delete the message', whyItMatters: 'Reporting helps service providers and authorities identify phishing attempts.', exactInstructions: 'Forward a phishing text to 7726 (SPAM). You can forward a phishing email to reportphishing@apwg.org and report the attempt to ReportFraud.ftc.gov. Then delete it.', severityWeight: 6, externalUrl: 'https://consumer.ftc.gov/articles/how-recognize-avoid-phishing-scams', externalLabel: 'FTC phishing guidance' },
     ],
+    seoGuide: {
+      whatHappensSummary: 'Most phishing links lead to a look-alike login or payment form rather than silently infecting an up-to-date phone or computer. If you closed the tab without typing credentials or installing a file, your immediate exposure is usually low.',
+      doNotDo: [
+        'Do not re-open the link to double-check the URL or take screenshots of login forms.',
+        'Do not reply "STOP" to unknown spam texts—replying confirms your phone number is active.',
+        'Do not call any toll-free support number displayed on a pop-up warning page.',
+      ],
+      commonRedFlags: [
+        'Shortened URLs (bit.ly, tinyurl) or misspelled brand domains like paypa1-support.com.',
+        'Urgent countdown timers claiming your account will be closed in 24 hours.',
+        'Requests for a 6-digit one-time verification code sent via SMS.',
+      ],
+      faqs: [
+        {
+          question: 'Can clicking a link on an iPhone or Android hack my phone automatically?',
+          answer: 'On modern, updated iPhones and Android devices, simply opening a webpage in Safari or Chrome rarely compromises the device by itself. Risk rises sharply only if you type a password, enter payment details, or install an app or configuration profile.',
+        },
+        {
+          question: 'What if I clicked a phishing link on my work computer?',
+          answer: 'Disconnect from any sensitive internal tools and notify your company’s IT or security helpdesk right away so they can check network logs and reset your work session tokens.',
+        },
+        {
+          question: 'Should I turn off Wi-Fi after clicking a suspicious link?',
+          answer: 'If you downloaded a file or granted remote access to a caller, disconnecting Wi-Fi or enabling Airplane Mode temporarily prevents data transfer while you remove the software.',
+        },
+      ],
+    },
   },
   {
     slug: 'weird-login-alert',
@@ -191,6 +240,29 @@ export const triageScenarios: TriageScenario[] = [
       { id: 'enable-two-step', stepTitle: 'Enable two-step sign-in for this account', whyItMatters: 'A second sign-in check adds protection if a password is guessed or exposed.', exactInstructions: 'In the official account’s Security settings, turn on two-step verification or add a passkey. Keep recovery codes private and never read a one-time code to a caller.', severityWeight: 12 },
       { id: 'recovery-settings', stepTitle: 'Review recovery email, phone, and forwarding settings', whyItMatters: 'An intruder may change account recovery options or add a rule that hides future security notices.', exactInstructions: 'In the account’s Security and Mail settings, verify recovery email and phone are yours. Check forwarding, filters, and connected apps for changes you did not make.', severityWeight: 15, showIf: { questionId: 'confirmed', anyOf: ['yes', 'unsure'] } },
     ],
+    seoGuide: {
+      whatHappensSummary: 'An unrecognized login alert happens either because a scammer sent a fake security email to trick you into clicking "Review Activity," or because someone guessed or leaked your password in a credential-stuffing attack.',
+      doNotDo: [
+        'Never click the "This wasn’t me" button directly inside a suspicious email or text.',
+        'Do not approve unexpected two-factor push prompts on your phone ("MFA fatigue" attacks).',
+        'Do not reuse a variation of your old password (like adding "1" or "!" at the end).',
+      ],
+      commonRedFlags: [
+        'Sign-in location listed in another state or country (note: mobile carriers sometimes route IP addresses through nearby cities).',
+        'Multiple two-factor authentication codes arriving when you are not trying to log in.',
+        'Third-party apps newly granted access in your Google, Apple, or Microsoft security dashboard.',
+      ],
+      faqs: [
+        {
+          question: 'Why does my login alert show a city hours away from where I live?',
+          answer: 'Cellular data networks and VPNs often route traffic through regional hubs hundreds of miles away. Check the timestamp and device type first—if it matches the exact moment you signed in on your phone, it may be your own connection.',
+        },
+        {
+          question: 'Does changing my password automatically kick an intruder out?',
+          answer: 'Not always. Many apps keep active session tokens signed in even after a password reset. Always use the "Sign out of all devices" button in your Security settings after changing your password.',
+        },
+      ],
+    },
   },
   {
     slug: 'usps-delivery-text',
@@ -215,6 +287,29 @@ export const triageScenarios: TriageScenario[] = [
       { id: 'remove-install', stepTitle: 'Review apps or profiles added after the message', whyItMatters: 'Unexpected installations can collect data or change device settings.', exactInstructions: 'Do not open the item again. Check your device’s app list and profile/device-management settings. Remove only items you know are unfamiliar; ask a trusted technician if you are uncertain.', platformInstructions: { iphone: 'Settings → General → VPN & Device Management; review unfamiliar profiles. Check App Library for apps you did not install.', android: 'Settings → Apps → See all apps; sort by recently installed if available. Run Play Store → profile → Play Protect → Scan.', windows: 'Settings → Apps → Installed apps; sort by install date. Then open Windows Security → Virus & threat protection → Quick scan.', mac: 'System Settings → General → Login Items & Extensions; review recent unfamiliar items and installed apps.' }, severityWeight: 18, showIf: { questionId: 'install', anyOf: ['yes', 'unsure'] }, recommendedTool: securityTool },
       { id: 'report-delivery', stepTitle: 'Block and report the fake text', whyItMatters: 'Reporting helps mobile carriers identify scam campaigns.', exactInstructions: 'Forward the message to 7726 (SPAM), then delete it. You can report a scam to the FTC at ReportFraud.ftc.gov.', severityWeight: 7, externalUrl: 'https://consumer.ftc.gov/articles/how-recognize-avoid-phishing-scams', externalLabel: 'FTC phishing guidance' },
     ],
+    seoGuide: {
+      whatHappensSummary: 'Fake USPS, UPS, and FedEx "smishing" texts claim a package is held at a warehouse due to an incomplete address and ask for a small $0.30 to $3.00 redelivery fee. Their real goal is capturing your credit card number and billing details.',
+      doNotDo: [
+        'Do not reply "Y" or "YES" as instructed by the text message to activate links.',
+        'Do not pay even a tiny 30-cent redelivery fee—scammers use small amounts to make you drop your guard.',
+        'Do not assume your card is safe just because no charge appeared immediately; criminals often test cards days later.',
+      ],
+      commonRedFlags: [
+        'Text sent from an international country code (such as +44, +63, or +234) or a random Gmail/iCloud email address.',
+        'Web links that do not end in official domains like usps.com, ups.com, or fedex.com.',
+        'Messages asking you to reply "Y", exit the text, and reopen it to make the link clickable (a trick used to bypass iMessage link filters).',
+      ],
+      faqs: [
+        {
+          question: 'I entered my credit card on a fake USPS site—what happens next?',
+          answer: 'Call the fraud number on the back of your card immediately and ask them to cancel the card number and issue a replacement. Also ask them to disable automatic merchant billing updates so recurring fraud attempts do not carry over to the new card.',
+        },
+        {
+          question: 'I only typed my name and home address, not my credit card. Am I at risk?',
+          answer: 'Your name and home address are already widely listed in public data-broker directories, so entering them alone does not give scammers access to your bank accounts. Expect an uptick in follow-up spam texts and watch closely for more convincing impersonation attempts.',
+        },
+      ],
+    },
   },
   {
     slug: 'phone-acting-hacked',
@@ -239,6 +334,29 @@ export const triageScenarios: TriageScenario[] = [
       { id: 'secure-accounts', stepTitle: 'Secure accounts if you shared a password or code', whyItMatters: 'A device symptom plus a shared sign-in secret deserves an account check, not just a device scan.', exactInstructions: 'From a separate trusted device if possible, open the affected service directly. Change the password, sign out unknown sessions, and contact your bank if payment information was involved.', severityWeight: 22, showIf: { questionId: 'money', anyOf: ['yes', 'unsure'] }, recommendedTool: passwordTool },
       { id: 'trusted-support', stepTitle: 'Ask a trusted technician if symptoms continue', whyItMatters: 'A professional can inspect the device without sending you to an unsolicited “support” number.', exactInstructions: 'Use the manufacturer’s official support channel, your organization’s IT team, or a technician you already trust. Do not grant remote access to someone who contacted you unexpectedly.', severityWeight: 8 },
     ],
+    seoGuide: {
+      whatHappensSummary: 'Sudden battery drain, overheating, or pop-up notifications are most often caused by rogue browser notification permissions, background app indexing after an OS update, or a weak cellular signal—not remote spyware.',
+      doNotDo: [
+        'Do not download "Phone Cleaner" or "Battery Booster" apps from pop-up ads.',
+        'Do not pay online "cyber investigators" who promise to trace hackers on your phone.',
+        'Do not ignore genuine signs of account takeover (such as Sent texts you did not write or SIM card loss of service).',
+      ],
+      commonRedFlags: [
+        'Repeated fake "Your iPhone/Android is infected (4 viruses)" banners coming from Chrome or Safari notifications.',
+        'Sudden loss of cellular bars ("SOS Only" or "No SIM"), which can indicate a SIM-swap attack.',
+        'Unknown Device Management (MDM) profiles or Accessibility permissions enabled.',
+      ],
+      faqs: [
+        {
+          question: 'Why does my phone keep popping up fake McAfee or Norton virus warnings?',
+          answer: 'You accidentally tapped "Allow" on a website notification prompt. Your phone is not infected—go into Chrome or Safari site settings and revoke notification permissions for unfamiliar websites.',
+        },
+        {
+          question: 'When should I factory reset my phone?',
+          answer: 'A factory reset is only necessary if you installed an unverified app outside the official app store (sideloaded an APK or configuration profile) and cannot remove it normally. Back up your photos first and sign into your Apple ID or Google account from a clean device to verify security settings.',
+        },
+      ],
+    },
   },
   {
     slug: 'bank-fraud-text',
@@ -263,6 +381,29 @@ export const triageScenarios: TriageScenario[] = [
       { id: 'transaction-dispute', stepTitle: 'Report any unauthorized transaction immediately', whyItMatters: 'Fast reporting gives your bank a chance to investigate and explain dispute options.', exactInstructions: 'Use the bank’s official app or phone number to report the charge. Save the date, amount, and case number; do not include card details in this checklist.', severityWeight: 22, showIf: { questionId: 'transaction', anyOf: ['yes'] } },
       { id: 'block-text', stepTitle: 'Forward the suspicious text to 7726 and delete it', whyItMatters: 'This helps your carrier identify scam messages and prevents an accidental return to the link.', exactInstructions: 'Forward the message to 7726 (SPAM). Report it to the FTC at ReportFraud.ftc.gov, then delete it.', severityWeight: 7, externalUrl: 'https://consumer.ftc.gov/articles/how-recognize-avoid-phishing-scams', externalLabel: 'FTC phishing guidance' },
     ],
+    seoGuide: {
+      whatHappensSummary: 'Bank impersonation scams use spoofed caller IDs and fake fraud alerts to panic you into handing over your online banking login or reading aloud a one-time passcode—which scammers immediately use to drain accounts via Zelle or wire transfer.',
+      doNotDo: [
+        'Never read a 6-digit verification code to anyone calling you—even if Caller ID shows your bank’s real name.',
+        'Never transfer money to a "safe account" or "holding account" at a caller’s direction.',
+        'Never tap links in fraud-alert texts; legitimate banks only ask you to reply YES/NO without links.',
+      ],
+      commonRedFlags: [
+        'A follow-up phone call minutes after you reply "NO" to a fraud text, claiming to be the bank’s Fraud Prevention Department.',
+        'Requests for your debit card PIN, full Social Security number, or one-time login passcode.',
+        'Links leading to look-alike domains instead of your bank’s official mobile app.',
+      ],
+      faqs: [
+        {
+          question: 'Why did the caller know my name, address, and the last 4 digits of my card?',
+          answer: 'Scammers buy leaked consumer profiles from data breaches and public data brokers to make their calls sound legitimate. Knowing basic personal info does not mean they are from your bank.',
+        },
+        {
+          question: 'How do I verify if a fraud text from Chase, Bank of America, or Wells Fargo is real?',
+          answer: 'Ignore the text completely, open your bank’s official mobile app directly, or call the customer service number printed on the back of your physical debit or credit card.',
+        },
+      ],
+    },
   },
   {
     slug: 'email-account-compromised',
@@ -288,6 +429,217 @@ export const triageScenarios: TriageScenario[] = [
       { id: 'warn-contacts', stepTitle: 'Let contacts know not to trust recent unusual messages', whyItMatters: 'Friends may receive convincing scam links from your address while you are recovering access.', exactInstructions: 'Once you can safely use another trusted channel, tell close contacts to ignore unexpected links or money requests sent from your account during the incident.', severityWeight: 10, showIf: { questionId: 'activity', anyOf: ['yes'] } },
       { id: 'identity-check', stepTitle: 'Contact your bank if financial or identity details were exposed', whyItMatters: 'The email compromise may connect to other accounts if financial documents or recovery messages were accessible.', exactInstructions: 'Call your bank using the number on your card or statement if you see unauthorized activity or shared sensitive details. For identity theft, use IdentityTheft.gov for a tailored recovery plan.', severityWeight: 17, recommendedTool: identityTool, externalUrl: 'https://www.identitytheft.gov/', externalLabel: 'IdentityTheft.gov recovery steps' },
     ],
+    seoGuide: {
+      whatHappensSummary: 'Your primary email account is the master key to your digital life because it receives password-reset links for your banks, shopping apps, and social media. Attackers often hide silent auto-forwarding rules inside your inbox settings so they can keep reading your mail even after you change your password.',
+      doNotDo: [
+        'Do not stop at changing your password—always inspect Mail Forwarding and Filter/Rule settings.',
+        'Do not pay third-party "account recovery hackers" on social media or forums; they are recovery scammers.',
+        'Do not leave old phone numbers or secondary emails attached to your recovery settings.',
+      ],
+      commonRedFlags: [
+        'Inbox filters sending emails from banks, Amazon, or PayPal straight to Trash or Archive.',
+        'Unknown email addresses listed under Settings → Forwarding and POP/IMAP.',
+        'Replies bouncing back from contacts you never emailed.',
+      ],
+      faqs: [
+        {
+          question: 'Why are my friends getting spam from my email address even though I changed my password?',
+          answer: 'Either the attacker still has an active logged-in session token (use "Sign out all other sessions" in Security settings), or they spoofed your "From" display name using an external server—which does not require access to your inbox.',
+        },
+        {
+          question: 'Which accounts should I check first after my email was hacked?',
+          answer: 'Check your primary bank, credit cards, payment apps (PayPal, Venmo, Cash App), Apple ID / Google account, and tax or investment portals, as attackers search inboxes for financial statements and password reset links.',
+        },
+      ],
+    },
+  },
+  {
+    slug: 'instagram-account-hacked',
+    seoTitle: 'Instagram Hacked & Email or Password Changed? Recovery Steps',
+    metaDescription: 'Step-by-step Instagram account recovery checklist when a hacker changes your email, phone number, or two-factor authentication.',
+    heroHeadline: 'My Instagram was hacked and the email or password changed',
+    urgencyBadge: 'Social account takeover',
+    estimatedFixTime: '6–10 min',
+    intro: 'Act quickly before the attacker messages your followers with crypto or cash-app scams. Use Instagram’s official in-app recovery flow and check the email linked to your account.',
+    riskBase: 52,
+    icon: 'bell',
+    questions: [
+      { id: 'access', prompt: 'Can you still access your Instagram account or revert email?', helper: 'Check your inbox for a security email from security@mail.instagram.com.', choices: [{ value: 'revert', label: 'I have the "Email changed" link from Instagram', riskDelta: 10 }, { value: 'locked', label: 'I am completely locked out', riskDelta: 26 }, { value: 'in', label: 'I am still signed in on one device', riskDelta: 8 }] },
+      deviceQuestion,
+      { id: 'email_safe', prompt: 'Is the email account linked to Instagram still secure?', helper: 'Hackers often break into your email first to delete Instagram’s alert.', choices: [{ value: 'yes', label: 'Yes, my email is secure', riskDelta: 0 }, { value: 'no', label: 'No, my email was also compromised', riskDelta: 24 }, { value: 'unsure', label: 'I’m not sure', riskDelta: 8 }] },
+      { id: 'reuse', prompt: 'Did you use that Instagram password on any other site?', helper: 'Credential stuffing is the #1 way Instagram accounts get taken over.', choices: [{ value: 'yes', label: 'Yes, I reused it', riskDelta: 14 }, { value: 'no', label: 'No, it was unique', riskDelta: 0 }, { value: 'unsure', label: 'I’m not sure', riskDelta: 6 }] },
+    ],
+    checklistSteps: [
+      { id: 'ig-revert', stepTitle: 'Click "Secure my account" in Instagram’s official email alert', whyItMatters: 'When your email is changed, Instagram sends a time-sensitive revert link to your original email address.', exactInstructions: 'Search your inbox (and Trash/Spam) for messages from security@mail.instagram.com. If you see "Your email address was changed," tap the built-in "secure your account here" link immediately to undo the change.', severityWeight: 24, showIf: { questionId: 'access', anyOf: ['revert', 'locked'] } },
+      { id: 'ig-selfie', stepTitle: 'Request a login link or video selfie verification in the Instagram app', whyItMatters: 'If the hacker changed both email and phone, Instagram’s official video-selfie check can verify your identity against photos on your profile.', exactInstructions: 'Open the official Instagram app → tap "Get help logging in" (Android) or "Forgot password?" (iPhone) → tap "Need more help?" → "I can’t access this email or phone number" and follow the official on-screen prompts.', severityWeight: 22, showIf: { questionId: 'access', anyOf: ['locked'] }, externalUrl: 'https://help.instagram.com/149494825257596', externalLabel: 'Official Instagram Help Center' },
+      { id: 'ig-sessions', stepTitle: 'Remove unknown devices, Meta Accounts Center links, and 2FA apps', whyItMatters: 'Hackers often link their own Facebook account in Accounts Center or add their own authenticator app to lock you back out.', exactInstructions: 'Go to Instagram Settings → Accounts Center → Password and security → Where you’re logged in and log out all unrecognized devices. Also check Accounts Center → Accounts and remove any unfamiliar Facebook profile.', severityWeight: 20, recommendedTool: passwordTool },
+      { id: 'ig-email-check', stepTitle: 'Secure your email inbox and check Trash for deleted Instagram alerts', whyItMatters: 'If an attacker accessed your email, they can intercept future Instagram password resets.', exactInstructions: 'Change your email password, turn on two-step verification on your email, and check your email Trash folder and Forwarding settings.', severityWeight: 18, showIf: { questionId: 'email_safe', anyOf: ['no', 'unsure'] }, recommendedTool: passwordTool },
+      { id: 'ig-reuse', stepTitle: 'Change reused passwords on other accounts', whyItMatters: 'Prevent follow-up takeovers on your email, shopping, or banking apps.', exactInstructions: 'Update any other service that shared your old Instagram password using a unique password for each.', severityWeight: 14, showIf: { questionId: 'reuse', anyOf: ['yes', 'unsure'] }, recommendedTool: passwordTool },
+    ],
+    seoGuide: {
+      whatHappensSummary: 'Most Instagram takeovers happen through credential stuffing (reusing a password leaked on another site) or fake "copyright violation" and "brand collaboration" phishing messages. Once inside, scammers message your friends asking for urgent money transfers.',
+      doNotDo: [
+        'NEVER pay anyone on Instagram, X, or TikTok claiming to be an "ethical hacker" who can recover your account—100% of those are secondary scams.',
+        'Do not enter your Instagram login into third-party "Who viewed my profile" or "Follower tracker" apps.',
+        'Do not ignore Meta Accounts Center—removing the hacker’s password is useless if their Facebook account is still linked to your Instagram.',
+      ],
+      commonRedFlags: [
+        'Direct messages from a friend’s account asking you to vote in a contest or send them a 6-digit SMS link.',
+        'Emails claiming your account will be deleted in 24 hours for a copyright violation.',
+        'Sudden posts on your grid promoting cryptocurrency giveaways or fake investment returns.',
+      ],
+      faqs: [
+        {
+          question: 'How did someone bypass my Instagram two-factor authentication?',
+          answer: 'If you clicked a phishing link or logged into a fake collaboration portal, the site captured both your password and your one-time 6-digit code in real time, then immediately registered their own authenticator app.',
+        },
+        {
+          question: 'Can Instagram Support recover my account if the hacker deleted my photos?',
+          answer: 'Yes—Instagram’s automated video-selfie verification compares your live face scan against historical profile data stored on their servers even if the hacker archived or deleted your public posts.',
+        },
+      ],
+    },
+  },
+  {
+    slug: 'facebook-account-hacked',
+    seoTitle: 'Facebook Hacked & Email or Password Changed? Recovery Guide',
+    metaDescription: 'How to recover a hacked Facebook account when the email, phone number, or password has been changed, plus how to protect linked ad accounts.',
+    heroHeadline: 'My Facebook was hacked and I’m locked out',
+    urgencyBadge: 'Facebook takeover',
+    estimatedFixTime: '7–12 min',
+    intro: 'Facebook takeovers often target saved payment methods in Meta Pay or Facebook Ads Manager alongside your personal profile. Use Facebook’s official compromised-account flow right away.',
+    riskBase: 55,
+    icon: 'bell',
+    questions: [
+      { id: 'access', prompt: 'What is your current access status on Facebook?', helper: 'Check the email account you originally used to sign up for Facebook.', choices: [{ value: 'locked', label: 'Email/password changed and I am locked out', riskDelta: 26 }, { value: 'in', label: 'I can still get in, but see strange activity', riskDelta: 12 }, { value: 'disabled', label: 'My account was suspended after the hack', riskDelta: 24 }] },
+      deviceQuestion,
+      { id: 'payments', prompt: 'Did you have a card or PayPal saved in Meta Pay or Facebook Ads?', helper: 'Hackers frequently run unauthorized ads on compromised profiles.', choices: [{ value: 'yes', label: 'Yes, payment details were saved', riskDelta: 25 }, { value: 'no', label: 'No payment methods saved', riskDelta: 0 }, { value: 'unsure', label: 'I’m not sure', riskDelta: 8 }] },
+      { id: 'reuse', prompt: 'Was that Facebook password reused on your email or other sites?', helper: 'Securing your email prevents the hacker from re-entering.', choices: [{ value: 'yes', label: 'Yes', riskDelta: 15 }, { value: 'no', label: 'No', riskDelta: 0 }, { value: 'unsure', label: 'I’m not sure', riskDelta: 6 }] },
+    ],
+    checklistSteps: [
+      { id: 'fb-hacked-url', stepTitle: 'Start at Facebook’s official compromised-account page', whyItMatters: 'Facebook’s dedicated recovery flow lets you identify your account using an old password or linked profile even after the email was swapped.', exactInstructions: 'Type facebook.com/hacked directly into your browser (ideally on a phone or computer you previously used to log into Facebook) and follow the official identity verification steps.', severityWeight: 25, externalUrl: 'https://www.facebook.com/hacked', externalLabel: 'Open Facebook.com/hacked' },
+      { id: 'fb-email-revert', stepTitle: 'Check your email for Facebook’s "Did you change your email?" alert', whyItMatters: 'Facebook sends a rollback link to your previous email address when contact info is modified.', exactInstructions: 'Search your email inbox and Trash for messages from security@facebookmail.com and click the official link to revert the email change.', severityWeight: 20, showIf: { questionId: 'access', anyOf: ['locked', 'disabled'] } },
+      { id: 'fb-payments', stepTitle: 'Check Meta Pay, Ads Manager, and notify your bank if charges appear', whyItMatters: 'Attackers routinely spend thousands on Facebook Ads using saved cards before the owner regains access.', exactInstructions: 'Once back in, check Settings → Orders and payments (Meta Pay) and facebook.com/adsmanager for unauthorized campaigns. If you see unknown charges, call your bank immediately.', severityWeight: 22, showIf: { questionId: 'payments', anyOf: ['yes', 'unsure'] }, recommendedTool: identityTool },
+      { id: 'fb-security', stepTitle: 'Log out all devices, remove unknown admins, and enable 2FA', whyItMatters: 'Hackers often add themselves as admins on your Facebook Pages or link a rogue Instagram account.', exactInstructions: 'Go to Settings → Accounts Center → Password and security → Where you’re logged in and log out every unrecognized session. Turn on Two-Factor Authentication using an authenticator app.', severityWeight: 18, recommendedTool: passwordTool },
+      { id: 'fb-reuse', stepTitle: 'Update reused passwords on your email and other accounts', whyItMatters: 'Stops the attacker from using the same password elsewhere.', exactInstructions: 'Change your email password and any other account that shared your old Facebook password.', severityWeight: 14, showIf: { questionId: 'reuse', anyOf: ['yes', 'unsure'] }, recommendedTool: passwordTool },
+    ],
+    seoGuide: {
+      whatHappensSummary: 'Facebook accounts are high-value targets because they are often connected to Meta Pay, business pages, and external apps via "Continue with Facebook." Hackers quickly swap the primary email, enable their own 2FA, and run unauthorized ad campaigns.',
+      doNotDo: [
+        'Do not trust anyone on X, Reddit, or Telegram offering "Meta insider recovery" for a fee.',
+        'Do not create a brand-new Facebook account before attempting recovery on a recognized device via facebook.com/hacked.',
+        'Do not forget to check Facebook Pages you manage—hackers often leave themselves as Page Admins.',
+      ],
+      commonRedFlags: [
+        'Alerts from security@facebookmail.com saying a new email address was added or removed.',
+        'Account suddenly disabled for violating community standards (often triggered when a hacker posts prohibited content).',
+        'Unfamiliar credit card or PayPal charges labeled "FACEBK *ADS".',
+      ],
+      faqs: [
+        {
+          question: 'Why does facebook.com/hacked keep looping back to the hacker’s email?',
+          answer: 'Try accessing facebook.com/hacked from a home Wi-Fi network and device you have used with Facebook for months, or choose "No longer have access to these?" on the password reset screen to upload an official photo ID.',
+        },
+        {
+          question: 'What if the hacker got my Facebook account permanently disabled?',
+          answer: 'Once you regain control of the login via facebook.com/hacked, Facebook typically displays an on-screen appeal prompt specifically designed for accounts disabled due to unauthorized access.',
+        },
+      ],
+    },
+  },
+  {
+    slug: 'zelle-venmo-scam',
+    seoTitle: 'Sent Money to a Scammer on Zelle, Venmo, or Cash App?',
+    metaDescription: 'Immediate steps to take if you sent money to a scammer via Zelle, Venmo, or Cash App, including bank fraud escalation and documentation.',
+    heroHeadline: 'I sent money to a scammer on Zelle, Venmo, or Cash App',
+    urgencyBadge: 'Payment scam response',
+    estimatedFixTime: '5–10 min',
+    intro: 'Instant payment transfers move fast, so contacting your bank and the payment app’s fraud department within the first hour gives you the best chance of halting or recalling a pending transfer.',
+    riskBase: 64,
+    icon: 'bank',
+    questions: [
+      { id: 'app', prompt: 'How was the money sent?', helper: 'Different payment rails have different dispute and recall rules.', choices: [{ value: 'zelle', label: 'Zelle (through my bank app)', riskDelta: 18 }, { value: 'p2p', label: 'Venmo, Cash App, or PayPal', riskDelta: 14 }, { value: 'wire', label: 'Bank wire or crypto transfer', riskDelta: 24 }] },
+      deviceQuestion,
+      { id: 'credentials', prompt: 'Did you also share your bank login, SSN, or a one-time code?', helper: 'Scammers often ask for login codes after convincing you to send money.', choices: [{ value: 'yes', label: 'Yes, I shared login or identity details', riskDelta: 24 }, { value: 'no', label: 'No, I only sent the payment', riskDelta: 0 }, { value: 'unsure', label: 'I’m not sure', riskDelta: 6 }] },
+      { id: 'remote', prompt: 'Did the scammer have you install AnyDesk, TeamViewer, or a support app?', helper: 'Remote access lets scammers initiate additional transfers.', choices: [{ value: 'yes', label: 'Yes, I installed a remote-access app', riskDelta: 26 }, { value: 'no', label: 'No', riskDelta: 0 }, { value: 'unsure', label: 'I’m not sure', riskDelta: 5 }] },
+    ],
+    checklistSteps: [
+      { id: 'p2p-call-bank', stepTitle: 'Call your bank’s Fraud Department immediately (use the number on your card)', whyItMatters: 'If the transfer is still processing—or if you were tricked by an impersonator claiming to be your bank—fast escalation is critical.', exactInstructions: 'Call the fraud number on the back of your debit/credit card right now. Clearly state that you were targeted by a fraud/impersonation scam, give the exact transaction timestamp and amount, and ask for a claim number.', severityWeight: 28 },
+      { id: 'p2p-app-report', stepTitle: 'Report the recipient inside Zelle, Venmo, or Cash App', whyItMatters: 'Reporting flags the recipient’s account so the platform can freeze remaining funds before the scammer cashes out.', exactInstructions: 'Open the official payment app → tap the transaction → select "Report an issue" or contact official in-app support. Also report Zelle impostor scams directly through Zelle’s official scam reporting portal.', severityWeight: 20, externalUrl: 'https://www.zellepay.com/support/report-scam', externalLabel: 'Zelle Official Scam Reporting' },
+      { id: 'p2p-remove-remote', stepTitle: 'Uninstall any remote-access app and disconnect Wi-Fi if one was installed', whyItMatters: 'If a scammer installed AnyDesk, ScreenConnect, or QuickSupport, they can still watch your screen or drain other accounts.', exactInstructions: 'Uninstall the remote-access app immediately, reboot your device, and change your online banking password from a separate clean device.', severityWeight: 24, showIf: { questionId: 'remote', anyOf: ['yes', 'unsure'] }, recommendedTool: securityTool },
+      { id: 'p2p-lock-login', stepTitle: 'Reset online banking passwords and freeze credit if identity info was shared', whyItMatters: 'Prevents the scammer from logging into your bank directly or opening new credit lines.', exactInstructions: 'Change your bank and email passwords immediately. If you shared your SSN or driver’s license, place free credit freezes at Equifax, Experian, and TransUnion.', severityWeight: 22, showIf: { questionId: 'credentials', anyOf: ['yes', 'unsure'] }, recommendedTool: identityTool },
+      { id: 'p2p-ftc-police', stepTitle: 'File an FTC report and local police report for your bank claim', whyItMatters: 'Banks frequently require an official FTC Identity Theft / Fraud report number or police report number to review disputes.', exactInstructions: 'Submit the incident details at ReportFraud.ftc.gov and save the confirmation number for your bank’s fraud investigator.', severityWeight: 10, externalUrl: 'https://reportfraud.ftc.gov/', externalLabel: 'ReportFraud.ftc.gov' },
+    ],
+    seoGuide: {
+      whatHappensSummary: 'Peer-to-peer payment apps treat transfers like cash, which is why scammers impersonate banks, utilities, or Facebook Marketplace buyers to push victims into sending instant payments. Acting within minutes—and documenting impersonation—gives your bank the best chance to freeze the receiving account.',
+      doNotDo: [
+        'NEVER pay a "refund specialist" or "recovery hacker" who promises to claw back your Zelle or Venmo money—they will steal from you a second time.',
+        'Do not send a second payment to "unlock" or "verify" a refund.',
+        'Do not delete the text messages, call logs, or payment receipts—your bank’s fraud team needs screenshots as evidence.',
+      ],
+      commonRedFlags: [
+        'Anyone claiming you must "send money to yourself" via Zelle to reverse a fraud charge.',
+        'Buyers on Facebook Marketplace or Craigslist claiming you need to upgrade to a "Business Account" to receive their payment.',
+        'Callers demanding payment via Zelle, Venmo, gift cards, or Bitcoin ATM to avoid arrest or utility shutoff.',
+      ],
+      faqs: [
+        {
+          question: 'Can my bank reverse a Zelle payment if I was scammed?',
+          answer: 'While voluntary buyer-seller disputes are rarely reversed, major U.S. banks have updated policies to reimburse certain qualifying bank-impersonation Zelle scams. Escalate immediately to your bank’s Fraud Department and request a formal written review.',
+        },
+        {
+          question: 'Should I unlink my bank account from Venmo or Cash App after a scam?',
+          answer: 'If you shared your login credentials or allowed remote screen access, yes—call your bank to place a hold on ACH transfers or open a new checking account number so the scammer cannot initiate follow-up withdrawals.',
+        },
+      ],
+    },
+  },
+  {
+    slug: 'ssn-exposed-data-breach',
+    seoTitle: 'Social Security Number Leaked in a Data Breach? What to Do',
+    metaDescription: 'Free, practical steps to protect your credit and identity after your Social Security number (SSN) is exposed in a corporate data breach.',
+    heroHeadline: 'My Social Security number was leaked in a data breach',
+    urgencyBadge: 'Identity exposure protection',
+    estimatedFixTime: '8–15 min',
+    intro: 'A leaked Social Security number cannot be changed easily, so the smartest defense is locking down your credit files at all three bureaus so nobody can open loans or cards in your name.',
+    riskBase: 48,
+    icon: 'bank',
+    questions: [
+      { id: 'how', prompt: 'How did you find out your SSN was exposed?', helper: 'Knowing whether it was a company breach notice or active fraud helps prioritize steps.', choices: [{ value: 'notice', label: 'I received a data breach letter or dark-web alert', riskDelta: 12 }, { value: 'phished', label: 'I entered it on a scam website or gave it to a caller', riskDelta: 26 }, { value: 'fraud', label: 'I see an unfamiliar loan, credit inquiry, or tax issue', riskDelta: 32 }] },
+      deviceQuestion,
+      { id: 'frozen', prompt: 'Are your credit reports currently frozen at Equifax, Experian, and TransUnion?', helper: 'A credit freeze is free by federal law and blocks new credit checks.', choices: [{ value: 'no', label: 'No, they are not frozen', riskDelta: 18 }, { value: 'unsure', label: 'I’m not sure', riskDelta: 12 }, { value: 'yes', label: 'Yes, all three are frozen', riskDelta: 0 }] },
+      { id: 'irs', prompt: 'Have you set up an IRS Identity Protection PIN (IP PIN)?', helper: 'An IP PIN prevents scammers from filing a fake tax return using your SSN.', choices: [{ value: 'no', label: 'No', riskDelta: 8 }, { value: 'yes', label: 'Yes', riskDelta: 0 }, { value: 'unsure', label: 'I’m not sure', riskDelta: 4 }] },
+    ],
+    checklistSteps: [
+      { id: 'ssn-freeze', stepTitle: 'Place a FREE credit freeze at Equifax, Experian, and TransUnion', whyItMatters: 'Even if a criminal has your SSN, name, and birthdate, a credit freeze stops lenders from opening new credit cards or loans in your name.', exactInstructions: 'Visit each bureau’s official freeze page directly (Equifax.com, Experian.com, TransUnion.com). Freezing and unfreezing your credit is 100% free by federal law—you do not have to buy a paid "credit lock" plan to freeze your file.', severityWeight: 28, showIf: { questionId: 'frozen', anyOf: ['no', 'unsure'] }, recommendedTool: identityTool },
+      { id: 'ssn-reports', stepTitle: 'Pull your free official credit reports and check for unknown accounts', whyItMatters: 'Spotting unauthorized hard inquiries or new lines of credit early makes disputing them much easier.', exactInstructions: 'Go to AnnualCreditReport.com (the only federally authorized source for free weekly reports from all three bureaus) and review every open account and hard inquiry.', severityWeight: 18, externalUrl: 'https://www.annualcreditreport.com/', externalLabel: 'Open AnnualCreditReport.com' },
+      { id: 'ssn-irs-pin', stepTitle: 'Get an IRS Identity Protection PIN (IP PIN) to block tax fraud', whyItMatters: 'Criminals use stolen SSNs to file early fraudulent tax returns and steal refunds.', exactInstructions: 'Sign into your official IRS.gov account and enroll in the Identity Protection PIN (IP PIN) program so no federal tax return can be filed with your SSN without your annual 6-digit PIN.', severityWeight: 16, showIf: { questionId: 'irs', anyOf: ['no', 'unsure'] }, externalUrl: 'https://www.irs.gov/identity-theft-fraud-scams/get-an-identity-protection-pin', externalLabel: 'IRS.gov Get an IP PIN' },
+      { id: 'ssn-data-brokers', stepTitle: 'Remove your home address and phone from public data brokers', whyItMatters: 'Scammers combine leaked SSNs with public people-search profiles (Whitepages, Spokeo, BeenVerified) to pass security verification questions.', exactInstructions: 'Opt out of major people-search sites manually or use an automated data-removal service so your current address, relatives, and phone number are harder to cross-reference.', severityWeight: 12, recommendedTool: dataRemovalTool },
+      { id: 'ssn-identitytheft-gov', stepTitle: 'Create a formal FTC recovery plan if active fraud already occurred', whyItMatters: 'IdentityTheft.gov generates official dispute letters and an Identity Theft Report required by creditors and bureaus.', exactInstructions: 'If you see unauthorized accounts or collection notices, go to IdentityTheft.gov to file a report and receive a personalized step-by-step dispute checklist.', severityWeight: 22, showIf: { questionId: 'how', anyOf: ['fraud', 'phished'] }, externalUrl: 'https://www.identitytheft.gov/', externalLabel: 'Open IdentityTheft.gov' },
+    ],
+    seoGuide: {
+      whatHappensSummary: 'Because major corporate data breaches have exposed hundreds of millions of Social Security numbers, you should treat your SSN as semi-public information. Placing free security freezes at all three credit bureaus is the single strongest step you can take to neutralize a leaked SSN.',
+      doNotDo: [
+        'Do not pay for "Credit Lock" subscriptions when a federal "Credit Freeze" gives stronger legal protection for free.',
+        'Do not forget to freeze all THREE bureaus (Equifax, Experian, and TransUnion)—freezing only one leaves two open.',
+        'Do not ignore unfamiliar bank or utility bills arriving in the mail.',
+      ],
+      commonRedFlags: [
+        'Hard credit inquiries on your report from banks or auto lenders you never applied to.',
+        'IRS notices stating more than one tax return was filed using your SSN.',
+        'Emails or letters thanking you for opening a new checking account or credit card you did not request.',
+      ],
+      faqs: [
+        {
+          question: 'Does freezing my credit hurt my credit score or stop me from using my existing cards?',
+          answer: 'No. A credit freeze has zero impact on your credit score, and your existing credit cards, mortgage, and auto loans continue working normally. You simply lift the freeze temporarily for a few days whenever you apply for a new loan or credit card.',
+        },
+        {
+          question: 'Should I also freeze ChexSystems?',
+          answer: 'Yes—if you handed your SSN directly to a scammer, placing a free security freeze at ChexSystems.com prevents criminals from opening fraudulent checking or savings accounts in your name.',
+        },
+      ],
+    },
   },
 ];
 

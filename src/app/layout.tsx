@@ -20,10 +20,32 @@ export const metadata: Metadata = {
   },
 };
 
+const siteSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      name: 'Breach Response Kit',
+      url: 'https://breachresponsekit.com',
+      description: 'Free, private interactive incident triage and family scam prevention guides.',
+    },
+    {
+      '@type': 'Organization',
+      name: 'Breach Response Kit',
+      url: 'https://breachresponsekit.com',
+      logo: 'https://breachresponsekit.com/icon.svg',
+    },
+  ],
+};
+
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
       <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteSchema) }}
+        />
         <Header />
         <main>{children}</main>
         <Footer />
